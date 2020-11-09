@@ -50,9 +50,9 @@ namespace SuperHero.Controllers
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception e)
             {
-                return View();
+                return View(e);
             }
         }
 
@@ -67,17 +67,22 @@ namespace SuperHero.Controllers
         // POST: Superhero/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Superhero superHero)
         {
-            try
-            {
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            Superhero superHeroFromDb;
+            superHeroFromDb = _context.superheros.Where(s => s.Id == superHero.Id).SingleOrDefault();
+            superHeroFromDb.name = superHero.name;
+            superHeroFromDb.primaryAbility = superHero.primaryAbility;
+            superHeroFromDb.secondaryAbility = superHero.secondaryAbility;
+            superHeroFromDb.catchPhrase = superHero.catchPhrase;
+            superHeroFromDb.alterEgo = superHero.alterEgo;
+
+            _context.Update(superHeroFromDb);
+            _context.SaveChanges();
+                
+            
+            
+            return RedirectToAction("Details"); ;
         }
 
         // GET: Superhero/Delete/5
